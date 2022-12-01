@@ -29,13 +29,33 @@ namespace CSharp_CodeGenerator
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this.richTxtResult = new System.Windows.Forms.RichTextBox();
+            this.SuspendLayout();
+            // 
+            // richTxtResult
+            // 
+            this.richTxtResult.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.richTxtResult.Location = new System.Drawing.Point(0, 82);
+            this.richTxtResult.Name = "richTxtResult";
+            this.richTxtResult.Size = new System.Drawing.Size(800, 368);
+            this.richTxtResult.TabIndex = 0;
+            this.richTxtResult.Text = "";
+            // 
+            // Form1
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.richTxtResult);
+            this.Name = "Form1";
             this.Text = "Form1";
+            this.ResumeLayout(false);
+
         }
 
         #endregion
+
+        private System.Windows.Forms.RichTextBox richTxtResult;
     }
 }
 

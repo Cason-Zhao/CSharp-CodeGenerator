@@ -27,15 +27,15 @@ namespace Business.ConstClass
     {
         public string ClassName { get; set; } = "ClassNameConst";
 
-        public string ClassSummary { get; set; }
+        public string ClassSummary { get; set; } = "";
 
         public string FieldType { get; set; } = CommonTypeConsts.String;
 
-        public string FieldPrefix { get; set; }
+        public string FieldPrefix { get; set; } = "";
 
         public string RegexPattern { get; set; } = CommonRegexPattern.A;
 
-        public string InputString { get; set; }
+        public string InputString { get; set; } = "";
 
         public ConstClassFieldModel FieldModel { get; set; }
 

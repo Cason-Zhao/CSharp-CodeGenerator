@@ -16,7 +16,7 @@ namespace CSharp_CodeGenerator
         {
             InitializeComponent();
 
-            Business.ConstClass.ConstClassGenerator.Analysis(new Business.ConstClass.ConstClassParamModel
+            richTxtResult.Text = Business.ConstClass.ConstClassGenerator.Generate(new Business.ConstClass.ConstClassParamModel
             {
                 InputString = "A: 张三,B:李四",
                 RegexPattern = Business.ConstClass.CommonRegexPattern.A,

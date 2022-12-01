@@ -35,58 +35,57 @@ namespace Business.ConstClass
             }
 
             model.Validate();
+            var analysisResult = Analysis(model);
 
-            var constFieldContent = new List<ConstClassFieldModel>()
-                .Select(p => string.Format(@"
-        /// <summary>
+            var constFieldContent = analysisResult.FieldModel
+                .Select(p => string.Format(@"        /// <summary>
         /// {0}
         /// </summary>
-        public const {1} {2}{3} = {4};
-", p.FieldSummary, model.FieldType, model.FieldPrefix, p.FieldName, p.FieldValue));
+        public const {1} {2}{3} = {4};", p.FieldSummary, model.FieldType, model.FieldPrefix, p.FieldName, p.FieldValue));
 
-            var namesContent = new List<ConstClassFieldModel>()
-                .Select(p => string.Format(@"
-        {{ {0}{1}, {2} }}", model.FieldPrefix, p.FieldName, $"\"{p.FieldSummary}\""));
+            var namesContent = analysisResult.FieldModel
+                .Select(p => string.Format(@"           {{ {0}{1}, {2} }}", model.FieldPrefix, p.FieldName, $"\"{p.FieldSummary}\""));
 
             var result = new StringBuilder();
             result.Append(string.Format(@"    /// <summary>
     /// {0}
     /// </summary>
     public class {1}
-    {
+    {{
 {2}
-        private static readonly Dictionary<{3},string> _Names = new Dictionary<{3},string>
-        {
+
+        private static readonly Dictionary<{3}, string> _Names = new Dictionary<{3}, string>
+        {{
 {4}
-        }
+        }};
 
         /// <summary>
         /// 常量列表
         /// </summary>
         /// <returns></returns>
-        public static int[] GetAllKeys()
-        {
-            return Names.Keys.ToArray();
-        }
+        public static {3}[] GetAllKeys()
+        {{
+            return _Names.Keys.ToArray();
+        }}
 
         /// <summary>
         /// 获取名称
         /// </summary>
         /// <returns></returns>
-        public static string GetName(int key)
-        {
-            return Names.ContainsKey(key) ? Names[key] : string.Empty;
-        }
+        public static string GetName({3} key)
+        {{
+            return _Names.ContainsKey(key) ? _Names[key] : string.Empty;
+        }}
 
          /// <summary>
          /// 获取列表
          /// </summary>
          /// <returns></returns>
-         public static List<KeyValuePair<int, string>> GetAllList()
-         {
-             return Names.ToList();
-         }
-    }", model.ClassSummary, model.ClassName, string.Join(Environment.NewLine, constFieldContent), model.FieldType, namesContent));
+         public static List<KeyValuePair<{3}, string>> GetAllList()
+         {{
+             return _Names.ToList();
+         }}
+    }}", model.ClassSummary, model.ClassName, string.Join(Environment.NewLine, constFieldContent), model.FieldType, string.Join("," + Environment.NewLine, namesContent)));
 
             return result.ToString();
         }
@@ -100,6 +99,8 @@ namespace Business.ConstClass
             result.FieldPrefix = model.FieldPrefix;
             result.FieldModel = new ConstClassFieldModel();
 
+            //var regex = new Regex(model.RegexPattern);
+            
             var matches = Regex.Matches(model.InputString, model.RegexPattern)
                 .OfType<Match>()
                 .Select(p => new ConstClassFieldModel 
@@ -111,10 +112,21 @@ namespace Business.ConstClass
                 .ToList();
             if(matches.All(p => p.FieldValue.IsNumeric()))
             {
-
+                result.FieldType = CommonTypeConsts.Int;
+                if(string.IsNullOrEmpty(result.FieldPrefix))
+                {
+                    result.FieldPrefix = CommonPrefix.C;
+                }
             }
-
+            else
+            {
+                matches.ForEach(data => data.FieldValue = $"\"{data.FieldValue}\"");
+            }
+            result.FieldModel.AddRange(matches);
             return result;
         }
+
+        // 解析正则表达式匹配组的个数，并支持对各个位置进行默认配置与修改配置
+
     }
 }

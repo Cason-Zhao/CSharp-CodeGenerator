@@ -108,8 +108,7 @@ namespace Business.ConstClass
 
         public string GetFieldPatternProperty(Func<FieldPattern, string> getProperty)
         {
-            var cusProperty = getProperty(CustomFieldPattern);
-            return this.CustomFieldPattern == null || string.IsNullOrWhiteSpace(cusProperty) ? getProperty(this.GenerateFieldPattern) : cusProperty;
+            return this.CustomFieldPattern == null || string.IsNullOrWhiteSpace(getProperty(CustomFieldPattern)) ? getProperty(this.GenerateFieldPattern) : getProperty(CustomFieldPattern);
         }
     }
 
@@ -122,6 +121,6 @@ namespace Business.ConstClass
 
         public string FieldType { get; set; } = CommonTypeConsts.String;
 
-        public string FieldPrefix { get; set; } = CommonPrefix.C;
+        public string FieldPrefix { get; set; }
     }
 }

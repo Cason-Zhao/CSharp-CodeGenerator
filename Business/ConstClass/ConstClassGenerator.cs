@@ -161,7 +161,7 @@ namespace Business.ConstClass
                 .Select(p => new
                 {
                     Node = p.Groups[1].ToString() + p.Groups[2].ToString(),
-                    Index = Convert.ToInt32(p.Groups[2])
+                    Index = int.Parse(p.Groups[2].ToString())
                 })
                 .ToList()
                 .ForEach(data => result = result.Replace(data.Node, match.Groups[data.Index].ToString()))

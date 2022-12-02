@@ -35,15 +35,15 @@ namespace Business.ConstClass
             }
 
             model.Validate();
-            var analysisResult = Analysis(model);
+            Analysis((ConstClassParamModel)model);
 
-            var constFieldContent = analysisResult.FieldModel
+            var constFieldContent = model.FieldModels
                 .Select(p => string.Format(@"        /// <summary>
         /// {0}
         /// </summary>
         public const {1} {2}{3} = {4};", p.FieldSummary, model.FieldType, model.FieldPrefix, p.FieldName, p.FieldValue));
 
-            var namesContent = analysisResult.FieldModel
+            var namesContent = model.FieldModels
                 .Select(p => string.Format(@"           {{ {0}{1}, {2} }}", model.FieldPrefix, p.FieldName, $"\"{p.FieldSummary}\""));
 
             var result = new StringBuilder();
@@ -90,39 +90,82 @@ namespace Business.ConstClass
             return result.ToString();
         }
 
-        public static ConstClassParamModel Analysis(ConstClassParamModel model)
+        private static void Analysis(ConstClassParamModel model)
         {
-            ConstClassParamModel result = new ConstClassParamModel();
-            result.ClassName = model.ClassName;
-            result.ClassSummary = model.ClassSummary;
-            result.FieldType = model.FieldType;
-            result.FieldPrefix = model.FieldPrefix;
-            result.FieldModel = new ConstClassFieldModel();
+            model.FieldModels = new List<ConstClassFieldModel>();
 
             //var regex = new Regex(model.RegexPattern);
-            
-            var matches = Regex.Matches(model.InputString, model.RegexPattern)
+
+            var matchesX = Regex.Matches(model.InputString, model.RegexPattern)
                 .OfType<Match>()
+                .ToList();
+
+            model.GenerateFieldPattern = GetGenerateFieldPattern(matchesX);
+
+            var matches = matchesX
                 .Select(p => new ConstClassFieldModel 
                 { 
-                    FieldName = p.Groups[1].ToString(),
-                    FieldValue = p.Groups[1].ToString(),
-                    FieldSummary = p.Groups[2].ToString()
+                    FieldName = GetFieldMetadata(p, model.GetFieldPatternProperty(y => y.FieldNamePattern)),
+                    FieldValue = GetFieldMetadata(p, model.GetFieldPatternProperty(y => y.FieldValuePattern)),
+                    FieldSummary = GetFieldMetadata(p, model.GetFieldPatternProperty(y => y.FieldSummaryPattern)),
                 })
                 .ToList();
+
             if(matches.All(p => p.FieldValue.IsNumeric()))
             {
-                result.FieldType = CommonTypeConsts.Int;
-                if(string.IsNullOrEmpty(result.FieldPrefix))
+                model.GenerateFieldPattern.FieldType = CommonTypeConsts.Int;
+                if (!string.IsNullOrEmpty(model.ClassName))
                 {
-                    result.FieldPrefix = CommonPrefix.C;
+                    if (model.ClassName.ToLower().Contains("type"))
+                    {
+                        model.GenerateFieldPattern.FieldPrefix = CommonPrefix.T;
+                    }
+                    else if (model.ClassName.ToLower().Contains("code"))
+                    {
+                        model.GenerateFieldPattern.FieldPrefix = CommonPrefix.C;
+                    }
                 }
             }
             else
             {
                 matches.ForEach(data => data.FieldValue = $"\"{data.FieldValue}\"");
             }
-            result.FieldModel.AddRange(matches);
+            model.FieldModels.AddRange(matches);
+        }
+        private static FieldPattern GetGenerateFieldPattern(List<Match> matches)
+        {
+            var result = new FieldPattern();
+
+            var count = matches.Max(p => p.Groups.Count);
+            if(count == 3)
+            {
+                result.FieldNamePattern = "$1";
+                result.FieldValuePattern = "$1";
+                result.FieldSummaryPattern = "$2";
+            }
+            if(count == 4)
+            {
+                result.FieldNamePattern = "$1";
+                result.FieldValuePattern = "$2";
+                result.FieldSummaryPattern = "$3";
+            }
+
+            return result;
+        }
+
+        private static string GetFieldMetadata(Match match, string pattern)
+        {
+            var result = pattern;
+            Regex.Matches(pattern, @"(\$)(\d+)")
+                .OfType<Match>()
+                .Select(p => new
+                {
+                    Node = p.Groups[1].ToString() + p.Groups[2].ToString(),
+                    Index = Convert.ToInt32(p.Groups[2])
+                })
+                .ToList()
+                .ForEach(data => result = result.Replace(data.Node, match.Groups[data.Index].ToString()))
+                ;
             return result;
         }
 

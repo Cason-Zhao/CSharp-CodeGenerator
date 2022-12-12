@@ -1,0 +1,2 @@
+﻿[利用Visual Studio 2017的扩展开发(VSIX、ItemTemplate) 快速实现项目的半自动化搭建](https://blog.csdn.net/lynchee/article/details/83065608?spm=1001.2101.3001.6650.13&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-13-83065608-blog-107951468.pc_relevant_aa&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-13-83065608-blog-107951468.pc_relevant_aa&utm_relevant_index=18)
+[MSDoc](https://learn.microsoft.com/zh-cn/visualstudio/extensibility/how-to-use-wizards-with-project-templates?view=vs-2019)

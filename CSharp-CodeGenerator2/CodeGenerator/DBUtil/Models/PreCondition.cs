@@ -96,7 +96,7 @@ namespace CodeGenerator.DBUtil.Models
             if(!map.ContainsKey(connectionString))
             {
                 map.Add(connectionString, connectionFileName);
-                File.WriteAllText(_PreConditionMapPath, JsonConvert.SerializeObject(map));
+                File.WriteAllText(_PreConditionMapPath, JsonConvert.SerializeObject(map, Formatting.Indented));
             }
             return connectionFileName;
         }
@@ -159,7 +159,7 @@ namespace CodeGenerator.DBUtil.Models
                 }
             }
 
-            File.WriteAllText(filePath, JsonConvert.SerializeObject(preConditions.PreConditionList));
+            File.WriteAllText(filePath, JsonConvert.SerializeObject(preConditions.PreConditionList, Formatting.Indented));
         }
     }
 }

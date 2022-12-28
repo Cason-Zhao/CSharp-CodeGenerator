@@ -85,6 +85,7 @@ namespace CSharp_CodeGenerator2
             this.lblProgressBar = new System.Windows.Forms.ToolStripStatusLabel();
             this.btnSelectedToggle = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.timer2 = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.gridTables)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bsData)).BeginInit();
             this.panel2.SuspendLayout();
@@ -629,11 +630,13 @@ namespace CSharp_CodeGenerator2
             // 
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(400, 16);
+            this.progressBar.Visible = false;
             // 
             // lblProgressBar
             // 
             this.lblProgressBar.Name = "lblProgressBar";
             this.lblProgressBar.Size = new System.Drawing.Size(0, 17);
+            this.lblProgressBar.Visible = false;
             // 
             // btnSelectedToggle
             // 
@@ -752,6 +755,7 @@ namespace CSharp_CodeGenerator2
         private System.Windows.Forms.ToolStripProgressBar progressBar;
         private System.Windows.Forms.ToolStripStatusLabel lblProgressBar;
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Timer timer2;
     }
 }
 

@@ -245,7 +245,7 @@ namespace CodeGenerator.DBUtil.Models
                 }
             }
 
-            File.WriteAllText(filePath, JsonConvert.SerializeObject(preConditions.PreConditionList, Formatting.Indented));
+            File.WriteAllText(filePath, JsonConvert.SerializeObject(preConditions.PreConditionList.Where(p => !string.IsNullOrEmpty(p.FilterText)), Formatting.Indented));
         }
     }
 }

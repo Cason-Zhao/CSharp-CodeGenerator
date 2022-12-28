@@ -23,6 +23,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
+using System.Data.OleDb;
+using CodeGenerator.ExcelUtil;
 
 namespace CSharp_CodeGenerator2
 {
@@ -177,8 +180,21 @@ namespace CSharp_CodeGenerator2
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
                     var fileName = ofd.FileName;
+
+                    List<PreCondition> preConditionList = new List<PreCondition>();
+
+                    DataTable dt = ExcelUtil.ExcelToDataTable(fileName, isFirstRowTitle: false);
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        preConditionList.Add(new PreCondition
+                        {
+                            FilterText = dr.ItemArray[0].ToString(),
+                        });
+                    }
                     
-                    //string tableName = GetEx
+                    _PreConditions.PreConditionList = preConditionList;
+                    bsData.DataSource = _PreConditions.PreConditionList;
+                    bsData.ResetBindings(true);
                 }
             }
             catch (Exception x)

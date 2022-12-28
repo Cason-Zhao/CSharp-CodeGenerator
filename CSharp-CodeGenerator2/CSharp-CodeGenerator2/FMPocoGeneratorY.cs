@@ -151,29 +151,31 @@ namespace CSharp_CodeGenerator2
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            _ConnectStartTime = DateTime.Now;           
-
-            _Worker.RunWorkerAsync();
-        }
-
-        private void SearchData()
-        {
             if (string.IsNullOrEmpty(this.txtDataSource.Text))
             {
                 MessageBox.Show("请先填入连接字符串");
+                _Worker.Dispose();
                 return;
             }
             if (!_IsConnecting)
             {
                 MessageBox.Show("请先连接！", "提示");
+                _Worker.Dispose();
                 return;
             }
 
-            if (!timer1.Enabled)
-            {
-                timer1.Start();
-            }
+            _ConnectStartTime = DateTime.Now;
 
+            if (!_Worker.IsBusy)
+            {
+                InitProgressBar(true);
+                timer1.Start();
+                _Worker.RunWorkerAsync();                
+            }
+        }
+
+        private void SearchData()
+        {
             using (var helper = new DBHelper(txtDataSource.Text))
             {
                 try
@@ -209,25 +211,26 @@ namespace CSharp_CodeGenerator2
 
         private void BindData()
         {
-            bsData.DataSource = _TableInfos;
-            bsData.ResetBindings(true);
-            if (_TableInfos.Count > 0)
+            if (_IsConnecting)
             {
-                bsColumnInfos.DataSource = _TableInfos.First().ColumnInfos;
+                bsData.DataSource = _TableInfos;
+                bsData.ResetBindings(true);
+                if (_TableInfos.Count > 0)
+                {
+                    bsColumnInfos.DataSource = _TableInfos.First().ColumnInfos;
 
-                bsColumnInfosSelected.DataSource = _TableInfos.SelectMany(p => p.ColumnInfos.Where(y => y.IsSelected).ToList()).ToList();
-                bsColumnInfosSelected.ResetBindings(true);
+                    bsColumnInfosSelected.DataSource = _TableInfos.SelectMany(p => p.ColumnInfos.Where(y => y.IsSelected).ToList()).ToList();
+                    bsColumnInfosSelected.ResetBindings(true);
+                }
+
+                var timeSpan = DateTime.Now - _ConnectStartTime; // 连接后时间
+                var connectMilliseconds = timeSpan.TotalMilliseconds; // 连接所需毫秒数
+
+                var nowConMilliseconds = (connectMilliseconds + (_ConnectMilliseconds == 0 ? _ConnectMilliseconds : _ConnectMilliseconds)) / 2;// 新的平均连接时间
+                PreConditionUtil.SetConnectionMilliseconds(txtDataSource.Text, nowConMilliseconds);
+
+                _ConnectMilliseconds = (int)nowConMilliseconds;
             }
-
-            var timeSpan = DateTime.Now - _ConnectStartTime; // 连接后时间
-            var connectMilliseconds = timeSpan.TotalMilliseconds; // 连接所需毫秒数
-
-            var nowConMilliseconds = (connectMilliseconds + (_ConnectMilliseconds == 0 ? _ConnectMilliseconds : _ConnectMilliseconds)) / 2;// 新的平均连接时间
-            PreConditionUtil.SetConnectionMilliseconds(txtDataSource.Text, nowConMilliseconds);
-
-            _ConnectMilliseconds = (int)nowConMilliseconds;
-
-            InitProgressBar();
         }
 
         #region Toggle
@@ -352,6 +355,7 @@ namespace CSharp_CodeGenerator2
             if (string.IsNullOrEmpty(txtDataSource.Text))
             {
                 MessageBox.Show("请先填入连接字符串!");
+                _Worker.Dispose();
                 return;
             }
 
@@ -360,7 +364,9 @@ namespace CSharp_CodeGenerator2
                 try
                 {
                     _ConnectMilliseconds = (int)PreConditionUtil.GetConnectionMilliseconds(txtDataSource.Text); // 之前所有连接的平均时间
-                    InitProgressBar();
+                    InitProgressBar(true);
+
+                    timer1.Start();
 
                     using (SqlConnection objConnection = new SqlConnection(txtDataSource.Text))
                     {
@@ -392,11 +398,18 @@ namespace CSharp_CodeGenerator2
             // 加载数据
             if (_IsConnecting)
             {
-                _Worker.RunWorkerAsync();
-                timer1.Start();
+                if (!_Worker.IsBusy)
+                {
+                    _Worker.RunWorkerAsync();
+                }
             }
             else// 清理数据
             {
+                _Worker.WorkerSupportsCancellation = true;
+                _Worker.CancelAsync();
+                timer1.Stop();
+                InitProgressBar();
+
                 bsData.DataSource = null;
                 bsData.ResetBindings(true);
 
@@ -444,11 +457,23 @@ namespace CSharp_CodeGenerator2
 
         #region 进度条
 
-        private void InitProgressBar()
+        private void InitProgressBarTimer(int dueTime)
+        {
+            System.Threading.Timer timer = new System.Threading.Timer(args =>
+            {
+                Action<bool> initProgressBar = InitProgressBar;
+                this.Invoke(initProgressBar, false);
+            }, null, dueTime * 1000, 0);
+        }
+
+        private void InitProgressBar(bool isShow = false)
         {
             progressBar.Maximum = _ConnectMilliseconds == 0 ? 100 : _ConnectMilliseconds; ;
             progressBar.Step = progressBar.Maximum / 100;
             progressBar.Value = 0;
+            lblProgressBar.Text = "";
+            progressBar.Visible = isShow;
+            lblProgressBar.Visible = isShow;
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -466,9 +491,13 @@ namespace CSharp_CodeGenerator2
 
         void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            if (_IsConnecting)
+            {
+                this.progressBar.Value = this.progressBar.Maximum;
+                lblProgressBar.Text = "连接完成";
+            }
             timer1.Stop();
-            this.progressBar.Value = this.progressBar.Maximum;
-            lblProgressBar.Text = "连接完成";
+            InitProgressBarTimer(3);
         }
 
         void worker_DoWork(object sernder, DoWorkEventArgs e)

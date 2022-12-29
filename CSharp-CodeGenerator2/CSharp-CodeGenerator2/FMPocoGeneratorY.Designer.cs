@@ -36,6 +36,8 @@ namespace CSharp_CodeGenerator2
             this.bsData = new System.Windows.Forms.BindingSource(this.components);
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.btnEdit = new System.Windows.Forms.Button();
+            this.btnConnect = new System.Windows.Forms.Button();
             this.btnPreCondition = new System.Windows.Forms.Button();
             this.txtFilter = new System.Windows.Forms.TextBox();
             this.btnGenerate = new System.Windows.Forms.Button();
@@ -54,10 +56,6 @@ namespace CSharp_CodeGenerator2
             this.dataGridViewCheckBoxColumn3 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.dataGridViewCheckBoxColumn4 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.bsColumnInfosSelected = new System.Windows.Forms.BindingSource(this.components);
-            this.grpTarget = new System.Windows.Forms.GroupBox();
-            this.panelTargetContainer = new System.Windows.Forms.Panel();
-            this.richTxtTarget = new System.Windows.Forms.RichTextBox();
-            this.listVTargetMenu = new System.Windows.Forms.ListView();
             this.gridColumns = new System.Windows.Forms.DataGridView();
             this.isSelectedDataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.nameDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -78,16 +76,22 @@ namespace CSharp_CodeGenerator2
             this.btnTables_ColumnsToggle = new System.Windows.Forms.Button();
             this.splitContainer_Y_Bottom = new System.Windows.Forms.SplitContainer();
             this.grp_Top_Y_Bottom = new System.Windows.Forms.GroupBox();
+            this.grpTarget = new System.Windows.Forms.GroupBox();
+            this.panelTargetContainer = new System.Windows.Forms.Panel();
+            this.richTxtTarget = new System.Windows.Forms.RichTextBox();
+            this.listVTargetMenu = new System.Windows.Forms.ListView();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.progressBar = new System.Windows.Forms.ToolStripProgressBar();
+            this.lblProgressBar = new System.Windows.Forms.ToolStripStatusLabel();
             this.btnSelectedToggle = new System.Windows.Forms.Button();
-            this.btnConnect = new System.Windows.Forms.Button();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.timer2 = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.gridTables)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bsData)).BeginInit();
             this.panel2.SuspendLayout();
             this.grpColsSelected.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridColumnSelected)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bsColumnInfosSelected)).BeginInit();
-            this.grpTarget.SuspendLayout();
-            this.panelTargetContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridColumns)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bsColumnInfos)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Top_Y_Bottom)).BeginInit();
@@ -105,6 +109,9 @@ namespace CSharp_CodeGenerator2
             this.splitContainer_Y_Bottom.Panel2.SuspendLayout();
             this.splitContainer_Y_Bottom.SuspendLayout();
             this.grp_Top_Y_Bottom.SuspendLayout();
+            this.grpTarget.SuspendLayout();
+            this.panelTargetContainer.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // gridTables
@@ -119,9 +126,10 @@ namespace CSharp_CodeGenerator2
             this.gridTables.Location = new System.Drawing.Point(3, 17);
             this.gridTables.Name = "gridTables";
             this.gridTables.RowTemplate.Height = 23;
-            this.gridTables.Size = new System.Drawing.Size(492, 559);
+            this.gridTables.Size = new System.Drawing.Size(492, 657);
             this.gridTables.TabIndex = 5;
             this.gridTables.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridTables_CellClick);
+            this.gridTables.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.gridTables_RowPostPaint);
             // 
             // nameDataGridViewTextBoxColumn
             // 
@@ -147,12 +155,13 @@ namespace CSharp_CodeGenerator2
             // 
             this.splitter1.Location = new System.Drawing.Point(0, 66);
             this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(3, 737);
+            this.splitter1.Size = new System.Drawing.Size(3, 849);
             this.splitter1.TabIndex = 3;
             this.splitter1.TabStop = false;
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.btnEdit);
             this.panel2.Controls.Add(this.btnConnect);
             this.panel2.Controls.Add(this.btnPreCondition);
             this.panel2.Controls.Add(this.txtFilter);
@@ -165,6 +174,26 @@ namespace CSharp_CodeGenerator2
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(1279, 66);
             this.panel2.TabIndex = 4;
+            // 
+            // btnEdit
+            // 
+            this.btnEdit.Location = new System.Drawing.Point(916, 13);
+            this.btnEdit.Name = "btnEdit";
+            this.btnEdit.Size = new System.Drawing.Size(61, 22);
+            this.btnEdit.TabIndex = 7;
+            this.btnEdit.Text = "维护";
+            this.btnEdit.UseVisualStyleBackColor = true;
+            this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
+            // 
+            // btnConnect
+            // 
+            this.btnConnect.Location = new System.Drawing.Point(849, 12);
+            this.btnConnect.Name = "btnConnect";
+            this.btnConnect.Size = new System.Drawing.Size(61, 23);
+            this.btnConnect.TabIndex = 6;
+            this.btnConnect.Text = "连接";
+            this.btnConnect.UseVisualStyleBackColor = true;
+            this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
             // 
             // btnPreCondition
             // 
@@ -227,7 +256,7 @@ namespace CSharp_CodeGenerator2
             this.grpColsSelected.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpColsSelected.Location = new System.Drawing.Point(19, 0);
             this.grpColsSelected.Name = "grpColsSelected";
-            this.grpColsSelected.Size = new System.Drawing.Size(343, 579);
+            this.grpColsSelected.Size = new System.Drawing.Size(343, 677);
             this.grpColsSelected.TabIndex = 5;
             this.grpColsSelected.TabStop = false;
             this.grpColsSelected.Text = "选中项";
@@ -251,9 +280,10 @@ namespace CSharp_CodeGenerator2
             this.gridColumnSelected.Location = new System.Drawing.Point(3, 17);
             this.gridColumnSelected.Name = "gridColumnSelected";
             this.gridColumnSelected.RowTemplate.Height = 23;
-            this.gridColumnSelected.Size = new System.Drawing.Size(337, 559);
+            this.gridColumnSelected.Size = new System.Drawing.Size(337, 657);
             this.gridColumnSelected.TabIndex = 7;
-            this.gridColumnSelected.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridColumnSelected_CellDoubleClick);
+            this.gridColumnSelected.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridColumnSelected_CellClick);
+            this.gridColumnSelected.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.gridColumnSelected_RowPostPaint);
             // 
             // dataGridViewCheckBoxColumn1
             // 
@@ -328,54 +358,6 @@ namespace CSharp_CodeGenerator2
             // 
             this.bsColumnInfosSelected.DataSource = typeof(System.Collections.Generic.List<CodeGenerator.DBUtil.Models.ColumnInfo>);
             // 
-            // grpTarget
-            // 
-            this.grpTarget.Controls.Add(this.panelTargetContainer);
-            this.grpTarget.Controls.Add(this.listVTargetMenu);
-            this.grpTarget.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpTarget.Location = new System.Drawing.Point(0, 19);
-            this.grpTarget.Name = "grpTarget";
-            this.grpTarget.Size = new System.Drawing.Size(1276, 115);
-            this.grpTarget.TabIndex = 8;
-            this.grpTarget.TabStop = false;
-            this.grpTarget.Text = "目标值";
-            // 
-            // panelTargetContainer
-            // 
-            this.panelTargetContainer.Controls.Add(this.richTxtTarget);
-            this.panelTargetContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelTargetContainer.Location = new System.Drawing.Point(216, 17);
-            this.panelTargetContainer.Name = "panelTargetContainer";
-            this.panelTargetContainer.Size = new System.Drawing.Size(1057, 95);
-            this.panelTargetContainer.TabIndex = 14;
-            // 
-            // richTxtTarget
-            // 
-            this.richTxtTarget.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.richTxtTarget.Location = new System.Drawing.Point(0, 0);
-            this.richTxtTarget.Name = "richTxtTarget";
-            this.richTxtTarget.Size = new System.Drawing.Size(1057, 95);
-            this.richTxtTarget.TabIndex = 10;
-            this.richTxtTarget.Text = "";
-            // 
-            // listVTargetMenu
-            // 
-            this.listVTargetMenu.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.listVTargetMenu.Dock = System.Windows.Forms.DockStyle.Left;
-            this.listVTargetMenu.Font = new System.Drawing.Font("宋体", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.listVTargetMenu.FullRowSelect = true;
-            this.listVTargetMenu.GridLines = true;
-            this.listVTargetMenu.HideSelection = false;
-            this.listVTargetMenu.Location = new System.Drawing.Point(3, 17);
-            this.listVTargetMenu.MultiSelect = false;
-            this.listVTargetMenu.Name = "listVTargetMenu";
-            this.listVTargetMenu.Size = new System.Drawing.Size(213, 95);
-            this.listVTargetMenu.TabIndex = 13;
-            this.listVTargetMenu.TileSize = new System.Drawing.Size(128, 30);
-            this.listVTargetMenu.UseCompatibleStateImageBehavior = false;
-            this.listVTargetMenu.View = System.Windows.Forms.View.List;
-            this.listVTargetMenu.Click += new System.EventHandler(this.listVTargetMenu_Click);
-            // 
             // gridColumns
             // 
             this.gridColumns.AutoGenerateColumns = false;
@@ -395,10 +377,10 @@ namespace CSharp_CodeGenerator2
             this.gridColumns.Location = new System.Drawing.Point(3, 17);
             this.gridColumns.Name = "gridColumns";
             this.gridColumns.RowTemplate.Height = 23;
-            this.gridColumns.Size = new System.Drawing.Size(377, 559);
+            this.gridColumns.Size = new System.Drawing.Size(377, 657);
             this.gridColumns.TabIndex = 6;
             this.gridColumns.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridColumns_CellClick);
-            this.gridColumns.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridColumns_CellDoubleClick);
+            this.gridColumns.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.gridColumns_RowPostPaint);
             // 
             // isSelectedDataGridViewCheckBoxColumn
             // 
@@ -488,7 +470,7 @@ namespace CSharp_CodeGenerator2
             // 
             this.splitContainer_Top_Y_Bottom.Panel2.Controls.Add(this.grpColsSelected);
             this.splitContainer_Top_Y_Bottom.Panel2.Controls.Add(this.btnTables_ColumnsToggle);
-            this.splitContainer_Top_Y_Bottom.Size = new System.Drawing.Size(1270, 579);
+            this.splitContainer_Top_Y_Bottom.Size = new System.Drawing.Size(1270, 677);
             this.splitContainer_Top_Y_Bottom.SplitterDistance = 904;
             this.splitContainer_Top_Y_Bottom.TabIndex = 6;
             // 
@@ -506,7 +488,7 @@ namespace CSharp_CodeGenerator2
             // 
             this.splitC_Table_Cols.Panel2.Controls.Add(this.grpColumns);
             this.splitC_Table_Cols.Panel2.Controls.Add(this.btnTablesToggle);
-            this.splitC_Table_Cols.Size = new System.Drawing.Size(904, 579);
+            this.splitC_Table_Cols.Size = new System.Drawing.Size(904, 677);
             this.splitC_Table_Cols.SplitterDistance = 498;
             this.splitC_Table_Cols.TabIndex = 7;
             // 
@@ -516,7 +498,7 @@ namespace CSharp_CodeGenerator2
             this.grpTables.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpTables.Location = new System.Drawing.Point(0, 0);
             this.grpTables.Name = "grpTables";
-            this.grpTables.Size = new System.Drawing.Size(498, 579);
+            this.grpTables.Size = new System.Drawing.Size(498, 677);
             this.grpTables.TabIndex = 1;
             this.grpTables.TabStop = false;
             this.grpTables.Text = "数据表信息";
@@ -527,7 +509,7 @@ namespace CSharp_CodeGenerator2
             this.grpColumns.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpColumns.Location = new System.Drawing.Point(19, 0);
             this.grpColumns.Name = "grpColumns";
-            this.grpColumns.Size = new System.Drawing.Size(383, 579);
+            this.grpColumns.Size = new System.Drawing.Size(383, 677);
             this.grpColumns.TabIndex = 1;
             this.grpColumns.TabStop = false;
             this.grpColumns.Text = "表格列信息";
@@ -537,7 +519,7 @@ namespace CSharp_CodeGenerator2
             this.btnTablesToggle.Dock = System.Windows.Forms.DockStyle.Left;
             this.btnTablesToggle.Location = new System.Drawing.Point(0, 0);
             this.btnTablesToggle.Name = "btnTablesToggle";
-            this.btnTablesToggle.Size = new System.Drawing.Size(19, 579);
+            this.btnTablesToggle.Size = new System.Drawing.Size(19, 677);
             this.btnTablesToggle.TabIndex = 0;
             this.btnTablesToggle.Text = "←";
             this.btnTablesToggle.UseVisualStyleBackColor = true;
@@ -548,7 +530,7 @@ namespace CSharp_CodeGenerator2
             this.btnTables_ColumnsToggle.Dock = System.Windows.Forms.DockStyle.Left;
             this.btnTables_ColumnsToggle.Location = new System.Drawing.Point(0, 0);
             this.btnTables_ColumnsToggle.Name = "btnTables_ColumnsToggle";
-            this.btnTables_ColumnsToggle.Size = new System.Drawing.Size(19, 579);
+            this.btnTables_ColumnsToggle.Size = new System.Drawing.Size(19, 677);
             this.btnTables_ColumnsToggle.TabIndex = 1;
             this.btnTables_ColumnsToggle.Text = "←";
             this.btnTables_ColumnsToggle.UseVisualStyleBackColor = true;
@@ -568,9 +550,10 @@ namespace CSharp_CodeGenerator2
             // splitContainer_Y_Bottom.Panel2
             // 
             this.splitContainer_Y_Bottom.Panel2.Controls.Add(this.grpTarget);
+            this.splitContainer_Y_Bottom.Panel2.Controls.Add(this.statusStrip1);
             this.splitContainer_Y_Bottom.Panel2.Controls.Add(this.btnSelectedToggle);
-            this.splitContainer_Y_Bottom.Size = new System.Drawing.Size(1276, 737);
-            this.splitContainer_Y_Bottom.SplitterDistance = 599;
+            this.splitContainer_Y_Bottom.Size = new System.Drawing.Size(1276, 849);
+            this.splitContainer_Y_Bottom.SplitterDistance = 697;
             this.splitContainer_Y_Bottom.TabIndex = 7;
             // 
             // grp_Top_Y_Bottom
@@ -579,10 +562,81 @@ namespace CSharp_CodeGenerator2
             this.grp_Top_Y_Bottom.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grp_Top_Y_Bottom.Location = new System.Drawing.Point(0, 0);
             this.grp_Top_Y_Bottom.Name = "grp_Top_Y_Bottom";
-            this.grp_Top_Y_Bottom.Size = new System.Drawing.Size(1276, 599);
+            this.grp_Top_Y_Bottom.Size = new System.Drawing.Size(1276, 697);
             this.grp_Top_Y_Bottom.TabIndex = 7;
             this.grp_Top_Y_Bottom.TabStop = false;
             this.grp_Top_Y_Bottom.Text = "数据源信息";
+            // 
+            // grpTarget
+            // 
+            this.grpTarget.Controls.Add(this.panelTargetContainer);
+            this.grpTarget.Controls.Add(this.listVTargetMenu);
+            this.grpTarget.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.grpTarget.Location = new System.Drawing.Point(0, 19);
+            this.grpTarget.Name = "grpTarget";
+            this.grpTarget.Size = new System.Drawing.Size(1276, 107);
+            this.grpTarget.TabIndex = 10;
+            this.grpTarget.TabStop = false;
+            this.grpTarget.Text = "目标值";
+            // 
+            // panelTargetContainer
+            // 
+            this.panelTargetContainer.Controls.Add(this.richTxtTarget);
+            this.panelTargetContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelTargetContainer.Location = new System.Drawing.Point(216, 17);
+            this.panelTargetContainer.Name = "panelTargetContainer";
+            this.panelTargetContainer.Size = new System.Drawing.Size(1057, 87);
+            this.panelTargetContainer.TabIndex = 14;
+            // 
+            // richTxtTarget
+            // 
+            this.richTxtTarget.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.richTxtTarget.Location = new System.Drawing.Point(0, 0);
+            this.richTxtTarget.Name = "richTxtTarget";
+            this.richTxtTarget.Size = new System.Drawing.Size(1057, 87);
+            this.richTxtTarget.TabIndex = 10;
+            this.richTxtTarget.Text = "";
+            // 
+            // listVTargetMenu
+            // 
+            this.listVTargetMenu.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.listVTargetMenu.Dock = System.Windows.Forms.DockStyle.Left;
+            this.listVTargetMenu.Font = new System.Drawing.Font("宋体", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.listVTargetMenu.FullRowSelect = true;
+            this.listVTargetMenu.GridLines = true;
+            this.listVTargetMenu.HideSelection = false;
+            this.listVTargetMenu.Location = new System.Drawing.Point(3, 17);
+            this.listVTargetMenu.MultiSelect = false;
+            this.listVTargetMenu.Name = "listVTargetMenu";
+            this.listVTargetMenu.Size = new System.Drawing.Size(213, 87);
+            this.listVTargetMenu.TabIndex = 13;
+            this.listVTargetMenu.TileSize = new System.Drawing.Size(128, 30);
+            this.listVTargetMenu.UseCompatibleStateImageBehavior = false;
+            this.listVTargetMenu.View = System.Windows.Forms.View.List;
+            this.listVTargetMenu.Click += new System.EventHandler(this.listVTargetMenu_Click);
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.progressBar,
+            this.lblProgressBar});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 126);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(1276, 22);
+            this.statusStrip1.TabIndex = 9;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // progressBar
+            // 
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(400, 16);
+            this.progressBar.Visible = false;
+            // 
+            // lblProgressBar
+            // 
+            this.lblProgressBar.Name = "lblProgressBar";
+            this.lblProgressBar.Size = new System.Drawing.Size(0, 17);
+            this.lblProgressBar.Visible = false;
             // 
             // btnSelectedToggle
             // 
@@ -595,22 +649,16 @@ namespace CSharp_CodeGenerator2
             this.btnSelectedToggle.UseVisualStyleBackColor = true;
             this.btnSelectedToggle.Click += new System.EventHandler(this.btnSelectedToggle_Click);
             // 
-            // btnConnect
+            // timer1
             // 
-            this.btnConnect.Location = new System.Drawing.Point(849, 12);
-            this.btnConnect.Name = "btnConnect";
-            this.btnConnect.Size = new System.Drawing.Size(61, 23);
-            this.btnConnect.TabIndex = 6;
-            this.btnConnect.Text = "连接";
-            this.btnConnect.UseVisualStyleBackColor = true;
-            this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // FMPocoGeneratorY
             // 
             this.AcceptButton = this.btnSearch;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1279, 803);
+            this.ClientSize = new System.Drawing.Size(1279, 915);
             this.Controls.Add(this.splitContainer_Y_Bottom);
             this.Controls.Add(this.splitter1);
             this.Controls.Add(this.panel2);
@@ -624,8 +672,6 @@ namespace CSharp_CodeGenerator2
             this.grpColsSelected.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gridColumnSelected)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.bsColumnInfosSelected)).EndInit();
-            this.grpTarget.ResumeLayout(false);
-            this.panelTargetContainer.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gridColumns)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.bsColumnInfos)).EndInit();
             this.splitContainer_Top_Y_Bottom.Panel1.ResumeLayout(false);
@@ -640,9 +686,14 @@ namespace CSharp_CodeGenerator2
             this.grpColumns.ResumeLayout(false);
             this.splitContainer_Y_Bottom.Panel1.ResumeLayout(false);
             this.splitContainer_Y_Bottom.Panel2.ResumeLayout(false);
+            this.splitContainer_Y_Bottom.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Y_Bottom)).EndInit();
             this.splitContainer_Y_Bottom.ResumeLayout(false);
             this.grp_Top_Y_Bottom.ResumeLayout(false);
+            this.grpTarget.ResumeLayout(false);
+            this.panelTargetContainer.ResumeLayout(false);
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -656,7 +707,6 @@ namespace CSharp_CodeGenerator2
         private System.Windows.Forms.TextBox txtDataSource;
         private System.Windows.Forms.Button btnSearch;
         private System.Windows.Forms.GroupBox grpColsSelected;
-        private System.Windows.Forms.GroupBox grpTarget;
         private System.Windows.Forms.DataGridView gridColumns;
         private System.Windows.Forms.BindingSource bsColumnInfos;
         private System.Windows.Forms.Button btnClearSelected;
@@ -694,11 +744,18 @@ namespace CSharp_CodeGenerator2
         private System.Windows.Forms.DataGridViewTextBoxColumn decimalsDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewCheckBoxColumn nullableDataGridViewCheckBoxColumn;
         private System.Windows.Forms.DataGridViewCheckBoxColumn isIdentityDataGridViewCheckBoxColumn;
-        private System.Windows.Forms.Panel panelTargetContainer;
-        private System.Windows.Forms.ListView listVTargetMenu;
-        private System.Windows.Forms.RichTextBox richTxtTarget;
         private System.Windows.Forms.Button btnPreCondition;
         private System.Windows.Forms.Button btnConnect;
+        private System.Windows.Forms.Button btnEdit;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.GroupBox grpTarget;
+        private System.Windows.Forms.Panel panelTargetContainer;
+        private System.Windows.Forms.RichTextBox richTxtTarget;
+        private System.Windows.Forms.ListView listVTargetMenu;
+        private System.Windows.Forms.ToolStripProgressBar progressBar;
+        private System.Windows.Forms.ToolStripStatusLabel lblProgressBar;
+        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Timer timer2;
     }
 }
 

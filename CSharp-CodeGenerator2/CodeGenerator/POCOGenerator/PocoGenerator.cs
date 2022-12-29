@@ -14,8 +14,10 @@
  ***************************************************************************/
 using CodeGenerator.DBUtil.Consts;
 using CodeGenerator.DBUtil.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,10 +26,26 @@ namespace CodeGenerator
 {
     public class PocoGenerator
     {
-        public static string Generate(List<ColumnInfo> columnInfos, string pocoType = PocoType.A01)
+        public static string Generate(List<ColumnInfo> columnInfos, string pocoType = PocoType.A00)
         {
             var resultStrBuilder = new StringBuilder();
-            columnInfos.ForEach(column => resultStrBuilder.AppendLine(string.Format(PocoType.GetFormat(pocoType), column.Description, string.Format("{0}{1}", DataTypeConst.GetCSharpType(column.Type), column.Nullable ? string.Empty : ""), column.Name)));
+
+            PocoType pType = new PocoType();
+            if (pocoType == PocoType.A00)
+            {
+                resultStrBuilder.AppendLine("/*");
+                foreach (var item in pType.GetAllKeys().Where(p => p != PocoType.A00))
+                {
+                    columnInfos.ForEach(column => resultStrBuilder.AppendLine(string.Format(pType.GetFormat(item), column.Description, string.Format("{0}{1}", DataTypeConst.GetCSharpType(column.Type), column.Nullable ? string.Empty : ""), column.Name)));
+                    resultStrBuilder.AppendLine();
+                    resultStrBuilder.AppendLine();
+                }
+                resultStrBuilder.AppendLine("*/");
+            }
+            else
+            {
+                columnInfos.ForEach(column => resultStrBuilder.AppendLine(string.Format(pType.GetFormat(pocoType), column.Description, string.Format("{0}{1}", DataTypeConst.GetCSharpType(column.Type), column.Nullable ? string.Empty : ""), column.Name)));
+            }
 
             return resultStrBuilder.ToString();
         }
@@ -35,55 +53,83 @@ namespace CodeGenerator
 
     public class PocoType
     {
-        public const string A01 = "01";
-        public const string A02 = "02";
-        public const string A03 = "03";
-        public const string A04 = "04";
-        public const string A05 = "05";
+        public static string _PocoTypeFolderPath = System.IO.Path.Combine($"{AppDomain.CurrentDomain.BaseDirectory}", @"AppData\PocoGenerator");
+        public static string _PocoTypePath = System.IO.Path.Combine(_PocoTypeFolderPath, "PocoType.json");
 
-        private static readonly Dictionary<string, string> _Names = new Dictionary<string, string>()
+        /// <summary>
+        /// 模板类（全）
+        /// </summary>
+        public const string A00 = "00";
+
+        private Dictionary<string, string> _Names;
+
+        public Dictionary<string, string> GetPocoTypes()
         {
-            { A01, "模板类"},
-            { A02, "模板类（无说明）"},
-            { A03, "以逗号隔开的属性名称"},
-            { A04, "Linq结果属性赋值"},
-            { A05, "对象属性复制"},
-        };
+            if (!Directory.Exists(_PocoTypeFolderPath))
+            {
+                Directory.CreateDirectory(_PocoTypeFolderPath);
+            }
+            if (!File.Exists(_PocoTypePath))
+            {
+                using (File.Create(_PocoTypePath, 10000, FileOptions.Asynchronous))
+                {
 
-        private static readonly Dictionary<string, string> _Formats = new Dictionary<string, string>();
+                }
+                File.WriteAllText(_PocoTypePath, "{}");
+            }
 
-        static PocoType()
-        {
-            _Formats.Add(A01, @"
-    /// <summary>
-    /// {0}
-    /// </summary>
-    public {1} {2} {{ get; set; }}");
+            var content = File.ReadAllText(_PocoTypePath);
+            if (string.IsNullOrEmpty(content))
+            {
+                content = "{}";
+            }
 
-            _Formats.Add(A02, @"
-    public {1} {2} {{ get; set; }}");
-
-            _Formats.Add(A03, @"    {2},");
-            _Formats.Add(A04, @"    {2} = p.{2},");
-            _Formats.Add(A05, @"    this.{2} = data.{2};");
+            return JsonConvert.DeserializeObject<Dictionary<string, string>>(content);
         }
 
-        public static string GetFormat(string key)
+        public string GetFormat(string key)
         {
-            return !_Formats.ContainsKey(key) ? "" : _Formats[key];
+            if (!Directory.Exists(_PocoTypeFolderPath))
+            {
+                Directory.CreateDirectory(_PocoTypeFolderPath);
+            }
+
+            var filePath = Path.Combine(_PocoTypeFolderPath, $"{key}.txt");
+            if (!File.Exists(filePath))
+            {
+                using (File.Create(filePath, 10000, FileOptions.Asynchronous))
+                {
+
+                }
+            }
+
+            var content = File.ReadAllText(filePath);
+
+            return content;
         }
 
-        public static string[] GetAllKeys()
+        public PocoType()
+        {
+            _Names = new Dictionary<string, string>();
+            _Names.Add(A00, "模板类（全）");
+            var typeList = GetPocoTypes().ToList();
+            if (typeList != null && typeList.Count > 0)
+            {
+                typeList.ForEach(p => _Names.Add(p.Key, p.Value));
+            }
+        }
+
+        public string[] GetAllKeys()
         {
             return _Names.Keys.ToArray();
         }
 
-        public static string GetName(string key)
+        public string GetName(string key)
         {
             return !_Names.ContainsKey(key) ? "" : _Names[key];
         }
 
-        public static List<KeyValuePair<string, string>> GetAllList()
+        public List<KeyValuePair<string, string>> GetAllList()
         {
             return _Names.ToList();
         }

@@ -33,11 +33,11 @@ namespace CSharp_CodeGenerator2
         {
             this.components = new System.ComponentModel.Container();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.tableNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.bsData = new System.Windows.Forms.BindingSource(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
-            this.btnSave = new System.Windows.Forms.Button();
             this.btnCancell = new System.Windows.Forms.Button();
-            this.tableNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btnSave = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bsData)).BeginInit();
             this.panel1.SuspendLayout();
@@ -56,6 +56,14 @@ namespace CSharp_CodeGenerator2
             this.dataGridView1.RowTemplate.Height = 23;
             this.dataGridView1.Size = new System.Drawing.Size(800, 418);
             this.dataGridView1.TabIndex = 0;
+            this.dataGridView1.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.dataGridView1_RowPostPaint);
+            // 
+            // tableNameDataGridViewTextBoxColumn
+            // 
+            this.tableNameDataGridViewTextBoxColumn.DataPropertyName = "FilterText";
+            this.tableNameDataGridViewTextBoxColumn.HeaderText = "FilterText";
+            this.tableNameDataGridViewTextBoxColumn.Name = "tableNameDataGridViewTextBoxColumn";
+            this.tableNameDataGridViewTextBoxColumn.Width = 500;
             // 
             // bsData
             // 
@@ -71,16 +79,6 @@ namespace CSharp_CodeGenerator2
             this.panel1.Size = new System.Drawing.Size(800, 32);
             this.panel1.TabIndex = 1;
             // 
-            // btnSave
-            // 
-            this.btnSave.Location = new System.Drawing.Point(12, 6);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(75, 23);
-            this.btnSave.TabIndex = 0;
-            this.btnSave.Text = "保存";
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
-            // 
             // btnCancell
             // 
             this.btnCancell.Location = new System.Drawing.Point(93, 6);
@@ -91,12 +89,15 @@ namespace CSharp_CodeGenerator2
             this.btnCancell.UseVisualStyleBackColor = true;
             this.btnCancell.Click += new System.EventHandler(this.btnCancell_Click);
             // 
-            // tableNameDataGridViewTextBoxColumn
+            // btnSave
             // 
-            this.tableNameDataGridViewTextBoxColumn.DataPropertyName = "FilterText";
-            this.tableNameDataGridViewTextBoxColumn.HeaderText = "FilterText";
-            this.tableNameDataGridViewTextBoxColumn.Name = "tableNameDataGridViewTextBoxColumn";
-            this.tableNameDataGridViewTextBoxColumn.Width = 500;
+            this.btnSave.Location = new System.Drawing.Point(12, 6);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(75, 23);
+            this.btnSave.TabIndex = 0;
+            this.btnSave.Text = "保存";
+            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // FMPreCondition
             // 

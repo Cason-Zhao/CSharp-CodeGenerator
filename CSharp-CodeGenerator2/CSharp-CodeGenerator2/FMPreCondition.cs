@@ -69,5 +69,21 @@ namespace CSharp_CodeGenerator2
         {
             this.Close();
         }
+
+        // 排序
+        private void dataGridView1_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
+        {
+            //自动编号，与数据无关
+            Rectangle rectangle = new Rectangle(e.RowBounds.Location.X,
+               e.RowBounds.Location.Y,
+               dataGridView1.RowHeadersWidth - 4,
+               e.RowBounds.Height);
+            TextRenderer.DrawText(e.Graphics,
+                  (e.RowIndex + 1).ToString(),
+                   dataGridView1.RowHeadersDefaultCellStyle.Font,
+                   rectangle,
+                   dataGridView1.RowHeadersDefaultCellStyle.ForeColor,
+                   TextFormatFlags.VerticalCenter | TextFormatFlags.Right);
+        }
     }
 }

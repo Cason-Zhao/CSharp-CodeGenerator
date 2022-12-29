@@ -59,6 +59,12 @@
     <Compile Include="FMPocoGeneratorY.Designer.cs">
       <DependentUpon>FMPocoGeneratorY.cs</DependentUpon>
     </Compile>
+    <Compile Include="FMConditionSave.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FMConditionSave.Designer.cs">
+      <DependentUpon>FMConditionSave.cs</DependentUpon>
+    </Compile>
     <Compile Include="FMPreCondition.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -72,6 +78,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FMPocoGeneratorY.resx">
       <DependentUpon>FMPocoGeneratorY.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FMConditionSave.resx">
+      <DependentUpon>FMConditionSave.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FMPreCondition.resx">
       <DependentUpon>FMPreCondition.cs</DependentUpon>
